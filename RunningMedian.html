@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Median Finder (Heap Optimized)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 50%;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Median Finder (Heap Optimized)</h2>
+        <input type="number" id="numberInput" placeholder="Enter a number">
+        <button onclick="insertNumHandler()">Insert</button>
+        <div class="output">
+            <p><strong>Numbers Entered:</strong> <span id="numberList">None</span></p>
+            <p><strong>Median:</strong> <span id="median">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        class MinHeap {
+            constructor() {
+                this.heap = [];
+            }
+            insert(val) {
+                this.heap.push(val);
+                this._heapifyUp();
+            }
+            extractMin() {
+                if (this.heap.length === 1) return this.heap.pop();
+                const min = this.heap[0];
+                this.heap[0] = this.heap.pop();
+                this._heapifyDown();
+                return min;
+            }
+            _heapifyUp() {
+                let idx = this.heap.length - 1;
+                while (idx > 0) {
+                    let parent = Math.floor((idx - 1) / 2);
+                    if (this.heap[parent] > this.heap[idx]) {
+                        [this.heap[parent], this.heap[idx]] = [this.heap[idx], this.heap[parent]];
+                        idx = parent;
+                    } else break;
+                }
+            }
+            _heapifyDown() {
+                let idx = 0;
+                const length = this.heap.length;
+                while (true) {
+                    let left = 2 * idx + 1, right = 2 * idx + 2, smallest = idx;
+                    if (left < length && this.heap[left] < this.heap[smallest]) smallest = left;
+                    if (right < length && this.heap[right] < this.heap[smallest]) smallest = right;
+                    if (smallest === idx) break;
+                    [this.heap[idx], this.heap[smallest]] = [this.heap[smallest], this.heap[idx]];
+                    idx = smallest;
+                }
+            }
+            peek() { return this.heap[0]; }
+            size() { return this.heap.length; }
+        }
+
+        class MaxHeap {
+            constructor() {
+                this.heap = [];
+            }
+            insert(val) {
+                this.heap.push(val);
+                this._heapifyUp();
+            }
+            extractMax() {
+                if (this.heap.length === 1) return this.heap.pop();
+                const max = this.heap[0];
+                this.heap[0] = this.heap.pop();
+                this._heapifyDown();
+                return max;
+            }
+            _heapifyUp() {
+                let idx = this.heap.length - 1;
+                while (idx > 0) {
+                    let parent = Math.floor((idx - 1) / 2);
+                    if (this.heap[parent] < this.heap[idx]) {
+                        [this.heap[parent], this.heap[idx]] = [this.heap[idx], this.heap[parent]];
+                        idx = parent;
+                    } else break;
+                }
+            }
+            _heapifyDown() {
+                let idx = 0;
+                const length = this.heap.length;
+                while (true) {
+                    let left = 2 * idx + 1, right = 2 * idx + 2, largest = idx;
+                    if (left < length && this.heap[left] > this.heap[largest]) largest = left;
+                    if (right < length && this.heap[right] > this.heap[largest]) largest = right;
+                    if (largest === idx) break;
+                    [this.heap[idx], this.heap[largest]] = [this.heap[largest], this.heap[idx]];
+                    idx = largest;
+                }
+            }
+            peek() { return this.heap[0]; }
+            size() { return this.heap.length; }
+        }
+
+        const maxHeap = new MaxHeap();
+        const minHeap = new MinHeap();
+        const numbers = [];
+
+        function insertNumHandler() {
+            const input = document.getElementById("numberInput");
+            const val = parseInt(input.value);
+            if (isNaN(val)) return alert("Please enter a valid number");
+            numbers.push(val);
+            
+            if (maxHeap.size() === 0 || val <= maxHeap.peek()) {
+                maxHeap.insert(val);
+            } else {
+                minHeap.insert(val);
+            }
+
+            if (maxHeap.size() > minHeap.size() + 1) {
+                minHeap.insert(maxHeap.extractMax());
+            } else if (minHeap.size() > maxHeap.size()) {
+                maxHeap.insert(minHeap.extractMin());
+            }
+
+            document.getElementById("numberList").innerText = numbers.join(", ");
+            document.getElementById("median").innerText = findMedian();
+            input.value = "";
+        }
+
+        function findMedian() {
+            if (maxHeap.size() === minHeap.size()) {
+                return ((maxHeap.peek() + minHeap.peek()) / 2).toFixed(2);
+            } else {
+                return maxHeap.peek();
+            }
+        }
+    </script>
+
+</body>
+</html>

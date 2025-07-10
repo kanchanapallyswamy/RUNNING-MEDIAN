@@ -1,0 +1,61 @@
+Absolutely! Here's a polished and detailed chat-style explanation you can use to confidently explain your solution to an interviewer — showing the difference between brute-force and your optimal heap-based approach.
+
+🧑‍💼 Interview Chat: Explaining Time Complexity
+👨‍💼 Interviewer: Can you explain the time complexity of your median finder and how it's better than a brute-force approach?
+
+👨‍💻 You:
+Sure! There are two main approaches to solving the dynamic median problem — a brute-force method and an optimal method using heaps. Let me explain the difference.
+
+🧱 Brute-Force Approach (What Most People Do Initially)
+In the brute-force version, we store all numbers in an array.
+Every time a new number is added:
+
+We insert it into the array
+
+Then sort the array
+
+Finally, we return the middle element(s)
+
+⏱️ Time Complexities:
+Insert: O(1)
+
+Sort on every insertion: O(n log n)
+
+Find median: O(1)
+
+➡️ So the total time per insertion becomes O(n log n), which is inefficient for large data streams or real-time systems.
+
+🚀 My Optimized Approach: Two Heaps (Max-Heap + Min-Heap)
+In my approach, I use two binary heaps:
+
+A max-heap (for the smaller half of the numbers)
+
+A min-heap (for the larger half)
+
+Every new number goes into one of the heaps, and I rebalance the sizes to keep the heaps roughly equal.
+
+⏱️ Time Complexities:
+Insert: O(log n) (heap insertion)
+
+Rebalance (if needed): O(log n)
+
+Find median: O(1) (just peek top of heap)
+
+So the total time per operation is O(log n), which is far more efficient.
+
+📊 Side-by-Side Comparison
+Operation	Brute Force (with sort)	My Optimized Heap-Based
+Insert	O(1)	O(log n)
+Sort (every time)	O(n log n)	❌ Not needed
+Median Retrieval	O(1)	✅ O(1)
+Total Time per Op	❌ O(n log n)	✅ O(log n)
+
+👨‍💻 You:
+So, by using this optimal approach, I ensure that my solution can handle large-scale input, real-time updates, and frequent queries efficiently — all while maintaining the correct median at every step.
+
+👨‍💼 Interviewer: Very nice. How did you handle heaps in JavaScript?
+
+👨‍💻 You:
+JavaScript doesn’t have built-in heap structures like Java’s PriorityQueue, so I implemented custom MaxHeap and MinHeap classes using arrays and heapify logic. That gives me full control over the performance and makes the solution closer to what you'd see in Java or Python implementations.
+
+Let me know if you want a short version, or if you want to practice saying this aloud in a mock interview style!
